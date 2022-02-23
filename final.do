@@ -1,10 +1,11 @@
 version 17
 
+** A few packages that may need to be installed
 * ssc install ftools
 * ssc install reghdfe
 * ssc install distinct
 
-* cd to data folder
+* set cd to your data folder
 
 use final.dta, clear
 
@@ -149,17 +150,16 @@ twoway (kdensity log_wiki_yesterday_ if outcome==0, kernel(gauss) bw(0.2) lp(sol
  graph export "fig2.png" , as(png) name(fig2) replace width(2800) height(2000)
 
 
-twoway (kdensity wiki_dev_t_diff if outcome==1, kernel(gauss) bw(0.2) lp(solid) lcolor(black) lwidth(medium)), ///
+twoway (kdensity wiki_dev_y_diff if outcome==1, kernel(gauss) bw(0.2) lp(solid) lcolor(black) lwidth(medium)), ///
 title("") xtitle("Log difference in wikipedia profile page views", size(medlarge)) ytitle("Density", size(medlarge))  ///
  ylabel(0(0.1)0.4, format(%9.1fc) nogrid angle(0)) ymlabel(,nolabels) xsc(r(-9 9)) xlabel(-9(3)9, format(%9.0fc)) ///
  graphregion(fcolor(white)) plotregion(margin(0)) name(fig3, replace)
  graph export "fig3.png" , as(png) name(fig3) replace width(2800) height(2000)
 
-
- summarize wiki_dev_t_diff if outcome==1, detail
- ttest wiki_dev_t_diff==0 if outcome==1
- summarize wiki_dev_t_diff, detail
- sktest wiki_dev_t_diff
+ summarize wiki_dev_y_diff if outcome==1, detail
+ ttest wiki_dev_y_diff==0 if outcome==1
+ summarize wiki_dev_y_diff, detail
+ sktest wiki_dev_y_diff
 
 
 ***********************************************
@@ -178,8 +178,6 @@ test prob rankdiffx wiki_dev_y_diff
 *reghdfe error prob rankdiffx wiki_dev_y_diff [aweight=weight] if year<2019, absorb(tid) vce(cluster mid tid) // TABLE 1, Column 5 --- torunament-year FEs instead of just year (alt with weights)
 reghdfe error prob rankdiffx wiki_dev_y_diff, absorb(tid) vce(cluster mid tid) // TABLE 2, Column 5 --- torunament-year FEs instead of just year
 test prob rankdiffx wiki_dev_y_diff
-
-sum wiki_dev_y_diff_ if e(sample), detail
 
 
 **** 1st Round Matches only
@@ -215,7 +213,8 @@ test prob rankdiffx wiki_dev_y_diff
 
 /*** First generate in-sample ROI (%) - if interested in this...
 
-* Table 4,
+* RESULTS on in-sample ROIs NOT SHOWN in PAPER
+
 capture drop model_prob
 capture drop fractional* f_star* return* investment* roi*
 quietly: reg outcome prob rankdiffx wiki_dev_y_diff, vce(cluster mid)
@@ -250,7 +249,7 @@ count if model_prob!=.
 sum booksum_max if model_prob!=.
 sum roi_insample2
 
-*** what about using Bet365 odds
+*** what about using Bet365 odds?
 
 gen fractional4 = b365-1
 gen f_star4 = model_prob - (1-model_prob)/fractional4 if e(sample)
@@ -266,7 +265,6 @@ sum booksum_b365 if model_prob!=. & b365!=.
 sum roi_insample4
 
 ************************************************************************************************************
-
 quietly: reghdfe outcome prob wiki_dev_y_diff, noabsorb vce(cluster mid)
 capture drop model_prob
 predict model_prob if e(sample), xb
@@ -283,27 +281,8 @@ count if model_prob!=.
 sum booksum_b365 if model_prob!=.
 sum roi_insample3
 
-***********
-*** without the East?
-quietly: reghdfe outcome prob rankdiffx wiki_dev_y_diff if utc_offset < 7, noabsorb vce(cluster mid)
-capture drop model_prob
-predict model_prob if e(sample), xb
-gen fractional5 = avg-1
-gen f_star5 = model_prob - (1-model_prob)/fractional5
-replace f_star5 = . if f_star5 <=0
-gen return5 = f_star5*fractional5 if outcome==1
-replace return5 = -f_star5 if outcome==0
-egen investment_insample5 = sum(f_star5)
-egen return_insample5 = sum(return5)
-gen roi_insample5 = return_insample5/investment_insample5
-count if f_star5!=.
-count if model_prob!=.
-sum booksum_avg if model_prob!=.
-sum roi_insample5
-
 ************
-*** What about Elopredict/Welopredict
-
+*** What about Elopredict/Welopredict?
 gen fractionalelo = b365-1
 gen f_starelo = elopredict - (1-elopredict)/fractionalelo
 replace f_starelo = . if f_starelo <=0
@@ -350,7 +329,7 @@ sum roi_insamplewelo if welopredict!=. & b365!=.
 **** OUT-OF-SAMPLE - TABLE 4 Results
 **** Estiamte up to 2019, use 2019 and start of 2020 as out-of-sample
 
-* column 1
+* Column 1
 capture drop model_prob
 capture drop fractional* f_star* return* investment* roi*
 quietly: reg outcome prob rankdiffx wiki_dev_y_diff if year<2019, vce(cluster mid)
@@ -405,9 +384,8 @@ sum roi_insample4
 ** 17.3% - healthy
 
 ************************************************************************************************************
-
 *** what about without the rank distance effect in the model? Is it just buzz effect that gets 17%?
-* column 4
+* Column 4
 quietly: reghdfe outcome prob wiki_dev_y_diff if year<2019, noabsorb vce(cluster mid)
 capture drop model_prob
 predict model_prob, xb
@@ -426,31 +404,8 @@ sum booksum_b365 if model_prob!=.
 sum roi_insample3
 
 
-
-***********
-*** without the East?
-/*
-quietly: reghdfe outcome prob rankdiffx wiki_dev_y_diff if year<2019 & utc_offset < 7, noabsorb vce(cluster mid)
-capture drop model_prob
-predict model_prob, xb
-replace model_prob=. if e(sample)
-replace model_prob=. if utc_offset > 6
-gen fractional5 = avg-1
-gen f_star5 = model_prob - (1-model_prob)/fractional5
-replace f_star5 = . if f_star5 <=0
-gen return5 = f_star5*fractional5 if outcome==1
-replace return5 = -f_star5 if outcome==0
-egen investment_insample5 = sum(f_star5)
-egen return_insample5 = sum(return5)
-gen roi_insample5 = return_insample5/investment_insample5
-count if f_star5!=.
-count if model_prob!=.
-sum booksum_avg if model_prob!=.
-sum roi_insample5
-*/
-
 *** What about using Elopredict and Bet 365 odds instead
-* column 5
+* Column 5
 preserve
 drop if year<2019
 gen fractionalelo = b365-1
@@ -467,8 +422,8 @@ sum booksum_b365 if elopredict!=. & b365!=.
 sum roi_insampleelo if elopredict!=. & b365!=.
 restore
 
-*** Using Welo?
-* column 6 
+*** Using Welo-predicted?
+* Column 6 
 preserve
 drop if year<2019
 gen fractionalwelo = b365-1
@@ -486,13 +441,12 @@ sum roi_insamplewelo if welopredict!=. & b365!=.
 restore
 
 
-
 *******************
 *** Betting returns using subsets of matches by p competitiveness
 *** TABLE 5
 
 *** P>0.8,p<0.2
-* column 1
+* Column 1
 capture drop fractional* f_star* return* investment* roi*
 quietly: reghdfe outcome prob wiki_dev_y_diff if (prob>0.8 | prob<0.2) & year<2019, noabsorb vce(cluster mid)
 capture drop model_prob
@@ -514,7 +468,7 @@ sum booksum_b365 if model_prob!=.
 sum roi_insample3
 
 *** P>0.6,p<0.4
-* column 2
+* Column 2
 capture drop fractional* f_star* return* investment* roi*
 quietly: reghdfe outcome prob wiki_dev_y_diff if (prob>0.6 | prob<0.4) & year<2019, noabsorb vce(cluster mid)
 capture drop model_prob
@@ -536,7 +490,7 @@ sum booksum_b365 if model_prob!=.
 sum roi_insample3
 
 *** P<=0.8,p>=0.2
-* column 3
+* Column 3
 capture drop fractional* f_star* return* investment* roi*
 quietly: reghdfe outcome prob wiki_dev_y_diff if (prob<=0.8 & prob>=0.2) & year<2019, noabsorb vce(cluster mid)
 capture drop model_prob
@@ -559,7 +513,7 @@ sum roi_insample3
 
 
 *** P<=0.6,p>=0.4
-* column 4
+* Column 4
 capture drop fractional* f_star* return* investment* roi*
 quietly: reghdfe outcome prob wiki_dev_y_diff if (prob<=0.6 & prob>=0.4) & year<2019, noabsorb vce(cluster mid)
 capture drop model_prob
