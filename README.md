@@ -23,7 +23,7 @@ The data sources used in this project include **odds** data collected from [tenn
 1. **Final** - data set compiled using the acquired odds, wikipedia, and time zone data
 
 ## Code
-All python scripts were only used to compile and process data. Merging and regressions are contained within the do files. All data input files
+All python scripts were only used to compile and process data. Merging and regressions are contained within the Stata .do files. All data input files
 for the scripts can be found in the google drive link listed in the data section. TO SKIP TO ANALYSIS AND MODELING, all you need is the final.dta file and the final.do file.
 
 **merge_odds.do**
