@@ -28,7 +28,7 @@ for the scripts can be found in the google drive link listed in the data section
 
 **merge_odds.do**
 <br />
-stata do file that compiles together every year's odds data found in the google drive. The output file (odds.dta) will be used to form the final dataset.
+stata .do file that compiles together every year's odds data found in the google drive. The output file (odds.dta) will be used to form the final dataset.
 ```
 # To run
 do merge_odds.do
@@ -52,7 +52,7 @@ python wiki_views.py -i '/path/to/players.csv' -o 'path/to/wikipedia.csv'
 
 **elo.R**
 <br />
-R script to provide elo and welo rankings for every player in the dataset with ranking information. Ouput is elo.dta and welo.dta
+R script to provide elo and welo ratings for every player and match time in the dataset with ranking information. Ouput is elo.dta and welo.dta
 ```
 # To run
 Rscript elo.R
@@ -60,7 +60,7 @@ Rscript elo.R
 
 **merge_all.do**
 <br />
-merges the wikipedia article views data into the odds.dta file for winners and losers. Additionally, timezones and elo/welo are merged in. The output file (final.dta) will be used for estimation.
+merges the wikipedia article views data into the odds.dta file for winners and losers. Additionally, timezones and elo/welo are merged in. The output file (final.dta) will be used for estimation and demonstration of the betting strategy.
 ```
 # To run
 do merge_all.do
@@ -68,7 +68,7 @@ do merge_all.do
 
 **final.do**
 <br />
-stata do file to reproduce estimations/figures found in our paper. File also includes light data manipulation/feature engineering
+stata .do file to reproduce estimations/figures found in our paper. File also includes light data manipulation/feature engineering
 ```
 # To run
 do final.do
