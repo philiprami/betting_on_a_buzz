@@ -1,3 +1,5 @@
+version 17
+
 * ssc install ftools
 * ssc install reghdfe
 * ssc install distinct
