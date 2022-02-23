@@ -45,7 +45,6 @@ gen year=`i'
 save `i'.dta, replace
 }
 
-
 forvalues i = 2019/2019{
 clear
 import delimited `i'.csv, encoding(UTF-8)
@@ -69,7 +68,7 @@ forvalues i = 2013/2020{
 append using `i'.dta
 }
 
-* some clean up to create unique names 
+* some clean up to create unique names (for twins and sisters) 
 replace winner = "Williamsx S." if winner == "Williams S."
 replace winner = "Radwanskax U." if winner == "Radwanska U."
 replace winner = "Pliskovax K." if winner == "Pliskova Ka."
