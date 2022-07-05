@@ -347,6 +347,8 @@ count if f_star!=.
 count if model_prob!=.
 sum booksum_avg if model_prob!=. & avg!=.
 sum roi_insample
+sum investment_insample
+sum return_insample
 * ROI: -6.4% ---, only slightly better than overround at 5.3% on average in_sample
 
 *** what about using "best" odds?
@@ -363,6 +365,8 @@ count if f_star2!=.
 count if model_prob!=.
 sum booksum_max if model_prob!=.
 sum roi_insample2
+sum investment_insample2
+sum return_insample2
 
 *** 3.0% ... that's not so impresive
 
@@ -380,6 +384,8 @@ count if f_star4!=.
 count if model_prob!=. & b365!=.
 sum booksum_b365 if model_prob!=. & b365!=.
 sum roi_insample4
+sum investment_insample4
+sum return_insample4
 
 ** 17.3% - healthy
 
@@ -402,7 +408,8 @@ count if f_star3!=.
 count if model_prob!=.
 sum booksum_b365 if model_prob!=.
 sum roi_insample3
-
+sum investment_insample3
+sum return_insample3
 
 *** What about using Elopredict and Bet 365 odds instead
 * Column 5
@@ -420,6 +427,8 @@ count if f_starelo!=.
 count if elopredict!=. & b365!=.
 sum booksum_b365 if elopredict!=. & b365!=.
 sum roi_insampleelo if elopredict!=. & b365!=.
+sum investment_insampleelo
+sum return_insampleelo
 restore
 
 *** Using Welo-predicted?
@@ -438,6 +447,8 @@ count if f_starwelo!=.
 count if welopredict!=. & b365!=.
 sum booksum_b365 if welopredict!=. & b365!=.
 sum roi_insamplewelo if welopredict!=. & b365!=.
+sum investment_insamplewelo
+sum return_insamplewelo
 restore
 
 
@@ -466,6 +477,8 @@ count if f_star3!=.
 count if model_prob!=.
 sum booksum_b365 if model_prob!=.
 sum roi_insample3
+sum investment_insample3
+sum return_insample3
 
 *** P>0.6,p<0.4
 * Column 2
@@ -488,6 +501,8 @@ count if f_star3!=.
 count if model_prob!=.
 sum booksum_b365 if model_prob!=.
 sum roi_insample3
+sum investment_insample3
+sum return_insample3
 
 *** P<=0.8,p>=0.2
 * Column 3
@@ -510,7 +525,8 @@ count if f_star3!=.
 count if model_prob!=.
 sum booksum_b365 if model_prob!=.
 sum roi_insample3
-
+sum investment_insample3
+sum return_insample3
 
 *** P<=0.6,p>=0.4
 * Column 4
@@ -533,3 +549,5 @@ count if f_star3!=.
 count if model_prob!=.
 sum booksum_b365 if model_prob!=.
 sum roi_insample3
+sum investment_insample3
+sum return_insample3
